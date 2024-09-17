@@ -47,10 +47,12 @@ const server = app.listen(PORT, () =>
 );
 
 const io = require("socket.io")(server, {
+  path: "/socket",
   pingTimeout: 60000,
-  rejectUnauthorized: false,
+  transports: ["websocket", "polling"],
   cors: {
-    origin: "http://localhost:3000",
+    origin:
+      process.env.NODE_ENV === "production" ? "*" : "http://localhost:3000",
   },
 });
 

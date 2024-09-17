@@ -21,7 +21,10 @@ import Lottie from "react-lottie";
 import io from "socket.io-client";
 import animationData from "../Animation/typing.json";
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT =
+  process.env.NODE_ENV === "production"
+    ? "https://yoo-app.onrender.com"
+    : "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -117,7 +120,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(ENDPOINT, {
+      path: "/socket",
+      transports: ["websocket", "polling"],
+    });
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
